@@ -1,0 +1,9 @@
+object,type,name,location,weight,health,status
+1,object,bandage,5,1,,
+2,object,sword,99,3,,
+3,object,flute,99,1,,
+4,object,rope,11,3,,
+5,actor,wizzard,19,,1,0
+6,actor,crow,0,,5,0
+7,actor,dragon,17,,5,0
+8,actor,blacksmith,10,,1,10

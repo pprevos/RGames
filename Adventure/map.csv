@@ -1,0 +1,29 @@
+room,name,north,south,east,west,up,down
+1,forest,1,4,2,1,0,0
+2,forest,3,5,3,1,0,0
+3,forest,2,6,20,2,0,0
+4,forest,1,7,5,4,0,0
+5,forest,2,8,6,4,0,0
+6,forest,3,9,6,5,0,0
+7,forest,4,10,8,4,0,0
+8,forest,5,8,9,7,0,0
+9,forest,6,12,14,8,0,0
+10,blacksmith,7,0,11,0,0,0
+11,workshop,0,0,0,10,0,0
+12,meadow,9,0,13,0,0,0
+13,tree,14,0,0,12,0,0
+14,meadow,0,13,0,9,0,0
+15,ramparts,0,0,16,0,0,0
+16,ramparts,0,0,0,15,0,17
+17,courtyard,0,0,0,18,16,0
+18,courtyard,0,19,17,0,0,0
+19,living quarters,18,0,0,0,0,0
+20,ante chamber,0,0,21,3,0,0
+21,temple,22,26,24,20,0,0
+22,temple,0,21,23,0,0,0
+23,temple,0,28,0,22,0,0
+24,treasury,0,0,0,21,0,0
+25,temple,0,0,0,28,0,0
+26,temple,21,0,27,0,0,0
+27,temple,28,0,0,26,0,0
+28,temple,23,27,25,0,0,0
