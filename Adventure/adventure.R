@@ -3,11 +3,11 @@
 ## lucidmanager.org
 
 ## Initiate game
-verbs <- c("look", "take", "put", "use", "wait", "kill")
+verbs <- c("look", "take", "put", "use", "wait", "kill", "quit")
 moves <- c("north", "south", "east", "west", "up", "down")
-map <- read.csv("map.csv")
-objects <- read.csv("objects.csv")
-actions <- readLines("actions.md")
+map <- read.csv("Adventure/map.csv")
+objects <- read.csv("Adventure/objects.csv")
+actions <- readLines("Adventure/actions.md")
 room <- 2
 health <- 6
 capacity <- 6
@@ -300,7 +300,9 @@ while (health > 0 & health < 99) {
     if (!is.na(verb)) {
         if (verb == "look")
             arg <- room
-        else
+        else if (verb == "quit")
+            break
+        else 
             arg <- object
         do.call(verb, list(arg))
     }
