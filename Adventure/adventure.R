@@ -8,9 +8,10 @@ moves <- c("north", "south", "east", "west", "up", "down")
 map <- read.csv("map.csv")
 objects <- read.csv("objects.csv")
 actions <- readLines("actions.md")
-room <- 5
+room <- 2
 health <- 6
-capacity <- 5
+capacity <- 6
+move <- 0
 
 ## Displays relevant prose (descriptions and results of actions)
 prose <- function(key) {
@@ -25,23 +26,25 @@ prose <- function(key) {
     cat("\n")
 }
 
+## List objects carried by player
+inventory <- function() {
+    stuff <- subset(objects, type == "object" & location == 0)$name
+    if (length(stuff) > 0)
+        cat(paste0("You have ", paste(stuff, collapse = ", "), ".\n\n"))
+}
+
 ## Describe the local surroundings
 look <- function(room) {
     ## Describe
     prose(paste("room", room))
     ## Directions
     passages <- moves[which(map[map$room == room, 3:8] != 0)]
-    cat(paste0("You can go: ", paste(passages, collapse = ", "), ".\n"))
+    cat(paste0("You can go: ", paste(passages, collapse = ", "), ".\n\n"))
     ## Objects
     stuff <- subset(objects, type == "object" & location == room)$name
     if (length(stuff) != 0)
         cat(paste0("You see: ", paste(stuff, collapse = ", "), ".\n"))
-    ## Inventory
     inventory()
-    cat("\n")
-    stuff <- subset(objects, type == "object" & location == 0)$name
-    if (length(stuff) > 0)
-        cat(paste0("You have ", paste(stuff, collapse = ", "), ".\n\n"))
 }
 
 ## Take an object
@@ -51,7 +54,7 @@ take <- function(object) {
     stuff <- subset(objects, type == "object" & location == room)$name
     if (object %in% stuff) {
         ob_num <- which(objects$name == object)
-        if (capacity - objects$weight[ob_num] <= 0)
+        if (capacity - objects$weight[ob_num] < 0)
             return(cat(paste0("You cannot carry the ", object, ".\n")))
         objects$location[ob_num] <<- 0
         capacity <<- capacity - objects$weight[ob_num]
@@ -83,16 +86,16 @@ use <- function(object) {
     if (objects[which(objects$name == object), "location"] != 0)
         return(cat(paste0("You don't have a ", object, ".\n")))
     if (object == "bandage") {
-        objects$location[1] <<- 100
-        capacity <- capacity - objects$weight[1]
-        if (room == objects$location[8] | objects$health[8] > 0) {
+        objects$location[1] <<- 99
+        capacity <<- capacity + objects$weight[1]
+        if (room == objects$location[8] & objects$health[8] > 0) {
             prose("heal blacksmith")
             objects$status[8] <<- 30
         } else {
             if (health == 6)
-                cat("You eat the bandage. It leaves a strange taste in or mouth.")
+                prose("eat bandage")
             else {
-                cat("You use the bandage to heal your wounds. You feel much better now.\n")
+                prose("use bandage")
                 health <<- 6
             }
         }
@@ -104,7 +107,10 @@ use <- function(object) {
             prose("flute1")
             prose("flute2")
             room <<- 49 - room
-            look(room)
+            if (room == 24)
+                health <<- 99
+            else
+                look(room)
         } else
             prose("flute1")
     }
@@ -115,10 +121,10 @@ use <- function(object) {
             map$up[14] <<- 15
             map$down[15] <<- 14
             ## Rope is no longer an object
-            objects$location[4] <<- 100
-            health <<- health + objects$weight[4]
+            objects$location[4] <<- 99
+            capacity <<- capacity + objects$weight[4]
             ## New room descriptions
-            actions <<- actions[-which(actions == "## rope in tree")]
+            actions[which(actions == "## rope in tree")] <<- "\n"
         } else
             prose("skipping")
     }
@@ -126,7 +132,7 @@ use <- function(object) {
 
 ## Wait for situation to change
 wait <- function(dummy) {
-    cat("You wait a little while ...\n")
+    cat("You wait a little while ...\n\n")
 }
 
 ## Kill something
@@ -144,20 +150,20 @@ kill <- function(object) {
     if (objects$health[opponent] <= 0)
         return(cat(paste0("You poke the dead ", object, ".\n")))
     ## Fight sequence
-    strength <- ifelse(objects$location[2] == 0, 2, 1)
-    cat(paste0("You attach the ", object, "with your ", weapon, ".\n"))
-    if (runif(1, 0, 1) > 0.4) {
-        cat()
-        objects$health[opponent] <- objects$health[opponent] - strength
+    strength <- ifelse(weapon == "sword", 2, 1)
+    cat(paste0("You attack the ", object, " with your ", weapon, ".\n\n"))
+    if (runif(1, 0, 1) > 0.3) {
+        objects$health[opponent] <<- objects$health[opponent] - strength
         if (objects$health[opponent] == 1)
             cat(paste0("The ", object, " is heavily wounded.\n"))
         if (objects$health[opponent] <= 0) {
             cat(paste0("The ", object, " succumbs to the blows of your ", weapon, ".\n"))
         }         
     } else
-        cat(paste0("Your enthusiam is commendable, but you don't manage to hit the ", object, ".\n"))     
+        cat(paste0("Your enthusiam is commendable, but you don't manage to hit the ",
+                   object, ".\n"))     
 }
-        
+
 ## Move player
 walk <- function(direction) {
     r <- map[map$room == room, direction]
@@ -198,7 +204,7 @@ actors <- function() {
     ## Dragon (object 7)
     if (objects$health[7] <= 0 & room == 17)
         prose("dead dragon")
-    if (room == 17) {
+    if (objects$health[7] > 0 & room == 17) {
         prose("dragon attack")
         if (runif(1, 0, 1) < 0.5) {
             prose("dragon hit 1")
@@ -206,7 +212,7 @@ actors <- function() {
         } else
             prose("dragon miss")   
     }
-    if (room == 18) {
+    if (objects$health[7] > 0 & room == 18) {
         prose("dragon hit 2")
         room <<- 16
         health <<- health - 1
@@ -214,52 +220,73 @@ actors <- function() {
     ## Blacksmith (object 8)
     if (room == objects$location[8]) {
         if (objects$health[8] <= 0)
-            return(cat("The dead blacksmith lies on the floor.\n"))
-        if (objects$status[8] == 10) {
-            prose("blacksmith wounded")
-            objects$status[8] <<- 20
-        }
-        if (objects$status[8] >= 20 & objects$status[8] < 30) {
-            prose("blacksmith pleading")
-            objects$status[8] <<- objects$status[8] + 1
-            if (objects$status[8] == 25)
-                objects$status[8] <<- 60
-        }
-        if (objects$status[8] == 30) {
-            prose("blacksmith healed")
-            objects$status[8] <<- 40
-            objects$location[8] <<- 11
-        }
-        if (objects$status[8] >= 40 & objects$status[8] < 50) {
-            objects$status[8] <<- objects$status[8] + 1
-            if (room == objects$location[8])
-                prose("blacksmith forges sword")
-            if (objects$status[8] == 43)
-                objects$status[8] <<- 50
-        }
-        if (objects$status[8] == 50) {
-            if (room == objects$location[8]) {
-                prose("blacksmith gives sword")
-                objects$location[2] <<- 11
-                objects$location[8] <<- 100
-                objects$status[8] <<- 0
+            prose("dead blacksmith")
+        else {
+            if (objects$status[8] == 70) {
+                prose("blacksmith forest")
+                objects$location[8] <<- sample(1:9, 1)
+            }
+            if (objects$status[8] == 60) {
+                if (room == objects$location[8]) {
+                    prose("blacksmith dies")
+                    objects$health[8] <<- 0
+                    objects$status[8] <<- 0
+                }
+            }
+            if (objects$status[8] == 50) {
+                if (room == objects$location[8]) {
+                    prose("blacksmith gives sword")
+                    objects$location[2] <<- 11
+                    objects$location[8] <<- sample(1:9, 1)
+                    objects$status[8] <<- 70
+                    look(room)
+                }
+            }
+            if (objects$status[8] >= 40 & objects$status[8] < 50) {
+                objects$status[8] <<- objects$status[8] + 1
+                if (room == objects$location[8])
+                    prose("blacksmith forges sword")
+                if (objects$status[8] == 42)
+                    objects$status[8] <<- 50
+            }
+            if (objects$status[8] == 30) {
+                prose("blacksmith healed")
+                objects$status[8] <<- 40
+                objects$location[8] <<- 11
+            }
+            if (objects$status[8] >= 20 & objects$status[8] < 30) {
+                prose("blacksmith pleading")
+                objects$status[8] <<- objects$status[8] + 1
+                if (objects$status[8] == 25)
+                    objects$status[8] <<- 60
+            }
+            if (objects$status[8] == 10) {
+                prose("blacksmith wounded")
+                objects$status[8] <<- 20
             }
         }
-        if (objects$status[8] == 60) {
-            if (room == objects$location[8]) {
-                prose("blacksmith dies")
-                objects$health[8] <<- 0
-                objects$status[8] <<- 0
-            }
+    }
+    if (room == 24) {
+        if (health == 99)
+            prose("victory")
+        else {
+            prose("thrown out")
+            health <<- health - 1
+            room <<- 20
+            look(20
+                 )
         }
     }
 }
 
 ## Game Play loop
-while (health > 0) {
+while (health > 0 & health < 99) {
+    if (move == 0)
+        prose("opening")
     verb <- NA
-    move <- NA
+    direction <- NA
     object <- NA
+    cat("----------------------------------------\n")
     command <- readline(prompt = "What would you like to do? :")
     command <- tolower(command)
     words <- unlist(strsplit(command, " "))
@@ -284,4 +311,5 @@ while (health > 0) {
         if(health <= 0)
             prose("death")
     }
+    move <- move + 1
 }
