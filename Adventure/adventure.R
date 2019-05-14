@@ -103,7 +103,7 @@ use <- function(object) {
     if (object == "sword")
         prose("fingernails")
     if (object == "flute") {
-        if (room > 20) { ## use the flute inside the tempel
+        if (room > 20) { ## use the flute inside the temple
             prose("flute1")
             prose("flute2")
             room <<- 49 - room
@@ -139,16 +139,22 @@ wait <- function(dummy) {
 kill <- function(object) {
     opponent <- which(objects$name == object)
     weapon <- ifelse(objects$location[2] == 0, "sword", "fists")
+    ## is opponent listed in objects?
+    if (length(which(objects$name == object)) == 0) {
+        return(cat("You cannot possibly do that.\n"))
     ## Existing actor?
-    if (is.na(object) | objects$type[opponent] != "actor")
+    } else if (is.na(object) | objects$type[opponent] != "actor") {
         return(cat("Now, now, not so agressive please.\n"))
     ## No opponent present
-    if (objects$location[opponent] != room) {
+    } else if (objects$location[opponent] != room) {
         return(prose(paste("shadow fight", weapon)))
-    }
     ## Dead opponent
-    if (objects$health[opponent] <= 0)
+    } else if  (objects$health[opponent] <= 0) {
         return(cat(paste0("You poke the dead ", object, ".\n")))
+    ## everything else
+    }
+ 
+    
     ## Fight sequence
     strength <- ifelse(weapon == "sword", 2, 1)
     cat(paste0("You attack the ", object, " with your ", weapon, ".\n\n"))
