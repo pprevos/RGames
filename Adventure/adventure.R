@@ -33,6 +33,14 @@ inventory <- function() {
         cat(paste0("You have ", paste(stuff, collapse = ", "), ".\n\n"))
 }
 
+## Show health, capacity and objects from inventory
+
+showStatus <- function() {
+    cat(paste0("You have ", health, " points of health\n"))
+    cat(paste0("You can carry ", capacity, " objects\n"))
+    inventory()
+}
+
 ## Describe the local surroundings
 look <- function(room) {
     ## Describe
@@ -49,10 +57,10 @@ look <- function(room) {
 
 ## Take an object
 take <- function(object) {
-    if (is.na(object))
+    if (is.na(object)) {
         return(cat("You cannot take this.\n"))
     stuff <- subset(objects, type == "object" & location == room)$name
-    if (object %in% stuff) {
+    } else if (object %in% stuff) {
         ob_num <- which(objects$name == object)
         if (capacity - objects$weight[ob_num] < 0)
             return(cat(paste0("You cannot carry the ", object, ".\n")))
@@ -60,9 +68,9 @@ take <- function(object) {
         capacity <<- capacity - objects$weight[ob_num]
         cat(paste0("You take the ", object, ".\n"))
         inventory()
-        }
-    else
+    } else {
         cat(paste0("You cannot take the ", object, ".\n"))
+    }
 }
 
 ## Put and object on the ground
@@ -81,40 +89,38 @@ put <- function(object)  {
 
 ## Use an object
 use <- function(object) {
-    if (is.na(object))
+    if (is.na(object)) {
         return(cat("You don't have that.\n"))
-    if (objects[which(objects$name == object), "location"] != 0)
+    } else if (objects[which(objects$name == object), "location"] != 0) {
         return(cat(paste0("You don't have a ", object, ".\n")))
-    if (object == "bandage") {
+    } else if (object == "bandage") {
         objects$location[1] <<- 99
         capacity <<- capacity + objects$weight[1]
         if (room == objects$location[8] & objects$health[8] > 0) {
             prose("heal blacksmith")
             objects$status[8] <<- 30
         } else {
-            if (health == 6)
+            if (health == 6) {
                 prose("eat bandage")
-            else {
+            } else {
                 prose("use bandage")
                 health <<- 6
             }
         }
-    }
-    if (object == "sword")
+    } else if (object == "sword") {
         prose("fingernails")
-    if (object == "flute") {
+    } else if (object == "flute") {
         if (room > 20) { ## use the flute inside the temple
             prose("flute1")
             prose("flute2")
             room <<- 49 - room
-            if (room == 24)
+            if (room == 24) {
                 health <<- 99
-            else
-                look(room)
-        } else
-            prose("flute1")
-    }
-    if (object == "rope") {
+            } else {
+                look(room)}
+        } else {
+            prose("flute1")}
+    } else if (object == "rope") {
         if (room == 14) {
             prose("rope")
             ## Create new room connections
@@ -125,8 +131,8 @@ use <- function(object) {
             capacity <<- capacity + objects$weight[4]
             ## New room descriptions
             actions[which(actions == "## rope in tree")] <<- "\n"
-        } else
-            prose("skipping")
+        } else {
+            prose("skipping") }
     }
 }
 
