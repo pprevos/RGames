@@ -36,8 +36,11 @@ inventory <- function() {
 ## Show health, capacity and objects from inventory
 
 showStatus <- function() {
+    # informs health
     cat(paste0("You have ", health, " points of health\n"))
+    # informs capacity
     cat(paste0("You can carry ", capacity, " objects\n"))
+    # informs on the inventory
     inventory()
 }
 
@@ -58,9 +61,9 @@ look <- function(room) {
 ## Take an object
 take <- function(object) {
     if (is.na(object)) {
-        return(cat("You cannot take this.\n"))
+        return(cat("You cannot take this.\n"))}
     stuff <- subset(objects, type == "object" & location == room)$name
-    } else if (object %in% stuff) {
+    if (object %in% stuff) {
         ob_num <- which(objects$name == object)
         if (capacity - objects$weight[ob_num] < 0)
             return(cat(paste0("You cannot carry the ", object, ".\n")))
@@ -93,47 +96,53 @@ use <- function(object) {
         return(cat("You don't have that.\n"))
     } else if (objects[which(objects$name == object), "location"] != 0) {
         return(cat(paste0("You don't have a ", object, ".\n")))
-    } else if (object == "bandage") {
-        objects$location[1] <<- 99
-        capacity <<- capacity + objects$weight[1]
-        if (room == objects$location[8] & objects$health[8] > 0) {
-            prose("heal blacksmith")
-            objects$status[8] <<- 30
-        } else {
-            if (health == 6) {
-                prose("eat bandage")
-            } else {
-                prose("use bandage")
-                health <<- 6
-            }
-        }
-    } else if (object == "sword") {
-        prose("fingernails")
-    } else if (object == "flute") {
-        if (room > 20) { ## use the flute inside the temple
-            prose("flute1")
-            prose("flute2")
-            room <<- 49 - room
-            if (room == 24) {
-                health <<- 99
-            } else {
-                look(room)}
-        } else {
-            prose("flute1")}
-    } else if (object == "rope") {
-        if (room == 14) {
-            prose("rope")
-            ## Create new room connections
-            map$up[14] <<- 15
-            map$down[15] <<- 14
-            ## Rope is no longer an object
-            objects$location[4] <<- 99
-            capacity <<- capacity + objects$weight[4]
-            ## New room descriptions
-            actions[which(actions == "## rope in tree")] <<- "\n"
-        } else {
-            prose("skipping") }
-    }
+    } else switch (object,
+                   bandage = { # if object is bandage
+                       objects$location[1] <<- 99
+                       capacity <<- capacity + objects$weight[1]
+                       if (room == objects$location[8] & objects$health[8] > 0) {
+                           prose("heal blacksmith")
+                           objects$status[8] <<- 30
+                       } else {
+                           if (health == 6) {
+                               prose("eat bandage")
+                           } else {
+                               prose("use bandage")
+                               health <<- 6
+                           }
+                       }
+                   },
+                   sword = { # if object is sword
+                       prose("fingernails")
+                       
+                   },
+                   flute = { # if object is flute
+                       if (room > 20) { ## use the flute inside the temple
+                           prose("flute1")
+                           prose("flute2")
+                           room <<- 49 - room
+                           if (room == 24) {
+                               health <<- 99
+                           } else {
+                               look(room)}
+                       } else {
+                           prose("flute1")}
+                   },
+                   rope = { # if object is rope
+                       if (room == 14) {
+                           prose("rope")
+                           ## Create new room connections
+                           map$up[14] <<- 15
+                           map$down[15] <<- 14
+                           ## Rope is no longer an object
+                           objects$location[4] <<- 99
+                           capacity <<- capacity + objects$weight[4]
+                           ## New room descriptions
+                           actions[which(actions == "## rope in tree")] <<- "\n"
+                           
+                       }}, # if it is something else
+                   prose("skipping") 
+    )
 }
 
 ## Wait for situation to change
