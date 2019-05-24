@@ -61,38 +61,30 @@ repeat{
     U <- M
     if (A1 == "N") {
         T <- N - 1
-    }
-    if (A1 == "E") {
+    } else if (A1 == "E") {
         U <- M + 1
-    }
-    if (A1 == "S") {
+    } else if (A1 == "S") {
         T <- N + 1
-    }
-    if (A1 == "W") {
+    } else if (A1 == "W") {
         U <- M - 1
     }
-    ## Collission detection
+    ## Collision detection
     if (A[T, U] == D | A[T, U] == B) { # Edge or grave
         print("That way's blocked")
-    }
-    if (A[T, U] == C) { # Hole
+    } else if (A[T, U] == C) { # Hole
         print("You've fallen into one of your own holes")
         break
-    }
-    if (A[T, U] == E) { # Skeleton
+    } else if (A[T, U] == E) { # Skeleton
         death <- 1
-    }
-    if (T == 9 & U == 20) { # Escaped
+    } else if (T == 9 & U == 20) { # Escaped
         print("You're free!")
         print(paste0("Your performance rating is ",
                     floor((60 - W) / 60 * (96 + X)), "%"))
         break
-    }
-    if (death == 1) {
+    } else if (death == 1) {
         print("Urk! You've been scared to death by a skeleton.")
         break
-    }
-    if (A[T, U] == Z) { # Player can move
+    } else if (A[T, U] == Z) { # Player can move
         ## Move player and dig hole
         A [N, M] <- Z
         if (X != 0) {
@@ -118,16 +110,13 @@ repeat{
                 if (A1 == "S" & A[P + 1, Q] == Z){
                     S[J] <- S[J] + 1 # Follow player
                     A[P, Q] <- Z
-                }
-                if (A1 == "N" & A[P - 1, Q] == Z){
+                } else if (A1 == "N" & A[P - 1, Q] == Z){
                     S[J] <- S[J] - 1 # Follow player
                     A[P, Q] <- Z
-                }
-                if (A1 == "E" & A[P, Q - 1] == Z & M < Q){
+                } else if (A1 == "E" & A[P, Q - 1] == Z & M < Q){
                     S[J + 1] <- S[J + 1] - 1 # Move towards player
                     A[P, Q] <- Z
-                }
-                if (A1 == "E" & A[P, Q + 1] == Z & M > Q) {
+                } else if (A1 == "E" & A[P, Q + 1] == Z & M > Q) {
                     S[J + 1] <- S[J + 1] + 1 # Reverse direction
                     A[P, Q] <- Z
                 }
