@@ -155,7 +155,7 @@ An invisible force hits your body and you are thrown out of the treasury. You la
 ## rope
 You throw the rope into the tree, and it wraps itself securely onto one of the branches.
 ## skipping
-You skip rope for a minute, but you trip and fall flat on your face.
+You skip rope for a minute, but you trip and fall flat on your face. Ouch, that hurts!
 ## Shadow fight sword
 You pull your sword from its sheath and start to skilfully swing it around. Unfortunately, there is no opponent to witness your mastery of the art of sword dancing.
 ## shadow fight fists

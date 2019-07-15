@@ -6,7 +6,7 @@
 verbs <- c("look", "take", "put", "use", "wait", "kill", "quit")
 moves <- c("north", "south", "east", "west", "up", "down")
 map <- read.csv("Adventure/map.csv")
-objects <- read.csv("Adventure/objects.csv")
+objects <- read.csv("Adventure/objects.csv", stringsAsFactors = FALSE)
 actions <- readLines("Adventure/actions.md")
 room <- 2
 health <- 6
@@ -139,10 +139,14 @@ use <- function(object) {
                            capacity <<- capacity + objects$weight[4]
                            ## New room descriptions
                            actions[which(actions == "## rope in tree")] <<- "\n"
-                           
-                       }}, # if it is something else
-                   prose("skipping") 
-    )
+                           ## Look
+                           look(room)
+                       } else {
+                           prose("skipping")
+                           health <<- health - 1
+                       }# if it is something else
+                   },
+                   )
 }
 
 ## Wait for situation to change
@@ -168,8 +172,7 @@ kill <- function(object) {
         return(cat(paste0("You poke the dead ", object, ".\n")))
     ## everything else
     }
- 
-    
+     
     ## Fight sequence
     strength <- ifelse(weapon == "sword", 2, 1)
     cat(paste0("You attack the ", object, " with your ", weapon, ".\n\n"))
@@ -311,9 +314,9 @@ while (health > 0 & health < 99) {
     command <- readline(prompt = "What would you like to do? :")
     command <- tolower(command)
     words <- unlist(strsplit(command, " "))
-    verb <- verbs[verbs %in% words][1] # First valid verb in the list
-    direction <- moves[moves %in% words][1] # First valid direction in the list
-    object <- objects$name[objects$name %in% words][1] # First valid object
+    verb <<- verbs[verbs %in% words][1] # First valid verb in the list
+    direction <<- moves[moves %in% words][1] # First valid direction in the list
+    object <<- objects$name[objects$name %in% words][1] # First valid object
     cat("\n")
     if (!is.na(direction)) {
         walk(direction)

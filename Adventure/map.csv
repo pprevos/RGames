@@ -11,10 +11,10 @@ room,name,north,south,east,west,up,down
 10,blacksmith,7,0,11,0,0,0
 11,workshop,0,0,0,10,0,0
 12,meadow,9,0,13,0,0,0
-13,tree,14,0,0,12,0,0
-14,meadow,0,13,0,9,0,0
+13,meadow,14,0,0,12,0,0
+14,tree,0,13,0,9,0,0
 15,ramparts,0,0,16,0,0,0
-16,ramparts,0,0,0,15,0,17
+16,ramparts,0,0,17,15,0,17
 17,courtyard,0,0,0,18,16,0
 18,courtyard,0,19,17,0,0,0
 19,living quarters,18,0,0,0,0,0
