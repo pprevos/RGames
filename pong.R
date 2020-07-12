@@ -1,41 +1,40 @@
-# pongR
-# Peter Prevos, peter@prevos.net
+## Simulating the Legendary Pong Game in R
 
-# Sound library
+## Sound library
 library(beepr) 
 
-# Game parameters
+## Game parameters
 skill <- 0.87 # Skill (0-1)
 score <- 0
 high.score <- 0
 
-# Define playing field
+## Define playing field
 x11()
 par(mar = rep(1,4), bg = "black")
 plot.new()
 plot.window(xlim = c(0,30), ylim = c(0,30))
 lines(c(1, 30, 30, 1), c(0, 0, 30, 30), type = "l", lwd = 5, col = "white")
 
-# Playing field boundaries (depend on cex)
+## Playing field boundaries (depends on cex)
 xmin <- 0.5
 xmax <- 29.4
 ymin <- 0.5
 ymax <- 29.4
 
-# initial position
+## initial position
 x <- sample(5:25, 1)
 y <- sample(5:25, 1)
 points(x, y, pch = 15, col = "white", cex = 2)
 
-# Paddle control
+## Paddle control
 psize <- 4
 ypaddle <- y
 
-# Set direction
+## Set direction
 dx <- runif(1, .5, 1)
 dy <- runif(1, .5, 1)
 
-# Game play
+## Game play
 while (x > xmin - 1) {
     sound <- 0 # Silence
     Sys.sleep(.05) # Pause screen
@@ -79,5 +78,4 @@ while (x > xmin - 1) {
 beep(8)
 text(15,15, "GAME OVER", cex=5, col = "white")
 s <- ifelse(score == 1, "", "s")
-text(15,5, paste0(score, " Point", s), cex=3, col = "white") 
-
+text(15,5, paste0(score, " Point", s), cex=3, col = "white")
