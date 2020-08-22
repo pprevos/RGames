@@ -1,0 +1,15 @@
+[[file:http://lucidmanager.org/images/rgames/r-games-banner.jpg]]
+
+Whoever said data science is boring? This repository contains a series of attempts to play computer games in the R Language for statistical computing.
+
+These games were text-based games or simple graphical games. I like to relive these days by occasionally translating some of these classics into the R language.
+
+R Games are perhaps not as exciting as their commercial counterparts as this language has limited facilities for live action. This series of articles attempts to relive some of the magic or early computer games by creatively using the capabilities of this language.
+
+- [[http://lucidmanager.org/data-science/tenliner-cave-adventure/][Tenliner Case Adventure]]: Miniature adventure game.  
+- [[https://lucidmanager.org/text-adventure/][Secret of Landusia]]: A classic text adventure, written in modular and extensible code.
+- [[https://lucidmanager.org/creepy-computer-games-in-r/][Creepy Computer Games]]: Celebrate Halloween with a computer game. Can you find your way out of the hunted cemetery?
+- [[https://lucidmanager.org/tic-tac-toe-war-games/][Tic Tac Toe]]: Unbeatable minimax algorithm playing noughts and crosses.
+- [[https://lucidmanager.org/pong/][Pong]]: An attempt to play arcade games in R.
+
+Have fun!
