@@ -10,6 +10,7 @@ solutions <- str_extract(js[1], 'Ma=\\[[a-z|\\"|\\,]+') %>%
   str_remove_all('Ma=\\[|[:punct:]')
 
 # New solutions at 13:00 UTC
+# Does not seem t owork on Windows due to tz conflict??
 current_time <- as.POSIXct(format(Sys.time(), tz = "UTC"))
 start_time <- as.POSIXct("2021-06-17 13:00:00", tz = "UTC")
 
