@@ -116,13 +116,13 @@ The crow manages to hit you and scratches your head.
 ## dead dragon
 A dead dragon lies across the courtyard.
 ## dragon attack
-A ginormous dragon sits in the corner. As soon as the beat notices you, it attacks you with a loud roar.
+A ginormous dragon sits in the corner. As soon as the beast notices you, it attacks you with a loud roar.
 ## dragon hit 1
-The foul smell of the dragon's breath distracts you for only a second. The beat hits you with one of its razor-sharp claws. You feel a sharp pain all over your body.
+The foul smell of the dragon's breath distracts you for only a second. The beast hits you with one of its razor-sharp claws. You feel a sharp pain all over your body.
 ## dragon hit 2
 The dragon swipes you of your feet with its long tail. The tail scoops you up and throws you on top of the ramparts.
 ## dragon miss
-With a swift jump, you manage to escape the dragon wrath. 
+With a swift jump, you manage to escape the dragon's wrath. 
 ## blacksmith wounded
 You see an old man lying on the ground who bleeds from a large wound. He turns his head towards you and begs for your help.
 ## blacksmith pleading
@@ -141,7 +141,7 @@ The mutilated corpse of the blacksmith lies on the floor. Such a shame, he forge
 The blacksmith is walking in the forest. As soon as you see him, he disappears among the trees.
 # ACTIONS
 ## eat bandage
-You slowly unroll the bandage and start stuffing into your mouth. You ripe off small pieces with your teeth and manage to swallow them. After a while, you manage to eat the whole roll of bandage. It leaves a dry taste in or mouth and a sick feeling in your stomach. I sure hope you didn't need this for something more useful.
+You slowly unroll the bandage and start stuffing into your mouth. You rip off small pieces with your teeth and manage to swallow them. After a while, you manage to eat the whole roll of bandage. It leaves a dry taste in or mouth and a sick feeling in your stomach. I sure hope you didn't need this for something more useful.
 ## use bandage
 You use the bandage to heal your wounds. You feel much better now.
 ## fingernails
